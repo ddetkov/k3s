@@ -17,8 +17,15 @@ all: k3s
 # k3s
 k3s: k3s.reset k3s.up
 ## up
-k3s.up: k3s.setup k3s.init k3s.info
+k3s.up: k3s.distr k3s.setup k3s.init k3s.info
 ### setup TODO разбить сетап на инсталл и кинфиг, в конфиге скачивать все образы для зависимостей(свой реджестри при инстале)
+k3s.distr:
+	@ssh ${USER}@${ENTRYPOINT} "sudo mkdir -p /var/opt/rancher"
+	@ssh ${USER}@${ENTRYPOINT} "sudo curl --connect-timeout 10 --retry 5 --retry-delay 3 -L -o /var/opt/rancher/k3s-airgap-images-arm64.tar.zst 'https://github.com/k3s-io/k3s/releases/download/v1.29.3%2Bk3s1/k3s-airgap-images-arm64.tar.zst'"
+	@ssh ${USER}@${ENTRYPOINT} "sudo docker image load -i /var/opt/rancher/k3s-airgap-images-arm64.tar.zst"
+	@ssh ${USER}@${ENTRYPOINT} "sudo curl --connect-timeout 10 --retry 5 --retry-delay 3 -L -o /var/opt/rancher/k3s 'https://github.com/k3s-io/k3s/releases/download/v1.29.3%2Bk3s1/k3s-arm64'"
+	@ssh ${USER}@${ENTRYPOINT} "sudo curl --connect-timeout 10 --retry 5 --retry-delay 3 -L -o /var/opt/rancher/install.sh 'https://get.k3s.io'"
+
 k3s.setup:
 	@ssh ${USER}@${ENTRYPOINT} "sudo mkdir -p /var/lib/rancher/k3s/agent/images"
 	@ssh ${USER}@${ENTRYPOINT} "sudo curl --connect-timeout 10 --retry 5 --retry-delay 3 -L -o /var/lib/rancher/k3s/agent/images/k3s-airgap-images-arm64.tar.zst 'https://github.com/k3s-io/k3s/releases/download/v1.29.3%2Bk3s1/k3s-airgap-images-arm64.tar.zst'"
