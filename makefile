@@ -31,7 +31,7 @@ k3s.setup:
 	@ssh ${USER}@${ENTRYPOINT} "sudo ln -s /var/lib/rancher/k3s/k3s /usr/local/bin/k3s"
 ### init
 k3s.init:
-	@ssh ${USER}@${ENTRYPOINT} "sudo INSTALL_K3S_CHANNEL=stable INSTALL_K3S_SKIP_DOWNLOAD=true INSTALL_K3S_EXEC='server --cluster-cidr=172.30.0.0/16 --service-cidr=172.40.0.0/16 --data-dir=/data/k3s --disable=traefik,servicelb,metrics-server --kubelet-arg container-log-max-files=3 --kubelet-arg container-log-max-size=10Mi' /var/lib/rancher/k3s/install.sh"
+	@ssh ${USER}@${ENTRYPOINT} "sudo INSTALL_K3S_CHANNEL=stable INSTALL_K3S_SKIP_DOWNLOAD=true INSTALL_K3S_EXEC='server --cluster-cidr=172.30.0.0/16 --service-cidr=172.40.0.0/16 --data-dir=/data/k3s --disable=traefik --kubelet-arg container-log-max-files=3 --kubelet-arg container-log-max-size=10Mi' /var/lib/rancher/k3s/install.sh"
 	@ssh ${USER}@${ENTRYPOINT} "sudo chmod 644 /etc/rancher/k3s/k3s.yaml"
 	@ssh ${USER}@${ENTRYPOINT} "sudo mkdir -p /root/.kube && sudo cp /etc/rancher/k3s/k3s.yaml /root/.kube/config"
 	@ssh ${USER}@${ENTRYPOINT} "sudo mkdir -p ~/.kube && sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/config"
